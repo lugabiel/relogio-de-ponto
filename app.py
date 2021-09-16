@@ -16,9 +16,10 @@ app = Flask(__name__)
 def git_update():
     repo = git.Repo('./relogio-de-ponto')
     origin = repo.remotes.origin
-    repo.create_head('main',origin.refs.main).set_tracking_branch(origin.refs.main).checkout()
+    repo.create_head('main',
+    origin.refs.main).set_tracking_branch(origin.refs.main).checkout()
     origin.pull()
-    return '',200
+    return '', 200
 
 @app.route('/')
 def index():
