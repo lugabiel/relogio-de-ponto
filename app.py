@@ -12,7 +12,7 @@ app = Flask(__name__)
 # connString = "mysql+mysqlconnector://<user>:<password>@<localhost[:3306/klipfolio"
 # app.config["SQLALCHEMY_DATABASE_URI"] = connString
 
-@app.route('/git_update', methods = ['GET','POST'])
+@app.route('/git_update', methods = ['POST'])
 def git_update():
     repo = git.Repo('./relogio-de-ponto')
     origin = repo.remotes.origin
