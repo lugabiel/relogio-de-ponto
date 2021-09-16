@@ -8,9 +8,9 @@ import git
 
 app = Flask(__name__)
 
-# SQL setup
-connString = "mysql+mysqlconnector://<user>:<password>@<localhost[:3306/klipfolio"
-app.config["SQLALCHEMY_DATABASE_URI"] = connString
+# # SQL setup
+# connString = "mysql+mysqlconnector://<user>:<password>@<localhost[:3306/klipfolio"
+# app.config["SQLALCHEMY_DATABASE_URI"] = connString
 
 @app.route("/<name>")
 def hello(name):
