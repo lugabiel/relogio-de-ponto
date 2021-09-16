@@ -12,10 +12,6 @@ app = Flask(__name__)
 # connString = "mysql+mysqlconnector://<user>:<password>@<localhost[:3306/klipfolio"
 # app.config["SQLALCHEMY_DATABASE_URI"] = connString
 
-@app.route("/<name>")
-def hello(name):
-    return f"Hello, {escape(name)}!"
-
 @app.route('/git_update', methods = ['POST'])
 def git_update():
     repo = git.Repo('./relogio-de-ponto')
@@ -24,3 +20,6 @@ def git_update():
     origin.pull()
     return '',200
 
+@app.route('/')
+def index():
+    return render_template("index.html")
