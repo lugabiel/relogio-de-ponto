@@ -1,12 +1,15 @@
+import re
 from flask import Flask, Response, request, render_template
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 import mysql.connector
 import json
 
 # from flask_marshmallow import Marshmallow
 from flask.wrappers import Response
 from markupsafe import escape
-from datetime import date
+from datetime import date,datetime
+import time
 import git
 
 
@@ -26,6 +29,15 @@ class Usuario(db.Model):
     mail = db.Column(db.String(100))
     def to_json(self):
         return {"id": self.id, "nome": self.nome,"cpf": self.cpf,"data de cadastro": self.dataCadastro,"mail": self.mail }
+
+class controleDePonto(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    id_usu = db.Column(db.Integer)
+    data_hora = db.Column(db.String(30))
+    entrada_saida = db.Column(db.Boolean)
+    def to_json(self):
+        return {"id": self.id,"id_usu":self.id_usu,"data_hora": self.data_hora,"entrada_saida": self.entrada_saida}
+
 
 
 # Listar todos usuário
@@ -80,6 +92,52 @@ def atualizar_usuario(id):
     except Exception as e:
         print('Erro:',e)
         return gera_response(400,"",{},"Erro na atualização")
+
+# Bater o ponto com <id> do usuario
+@app.route("/usuario/<id>/ponto",methods=["POST"])
+def bater_ponto(id):
+    # existe usuario <id>?
+    obj_usuario = Usuario.query.filter_by(id=id).first()
+    if(obj_usuario != None): # sim
+        # usuario <id> ja bateu ponto alguma vez?
+        list_obj_ponto = controleDePonto.query.filter_by(id_usu=id).all()
+        list_json_ponto = [obj.to_json() for obj in list_obj_ponto]
+        obj_ponto = None
+        try:
+            obj_ponto = list_json_ponto.pop()
+            print(obj_ponto)
+        except:
+            ...
+        if (obj_ponto != None): # sim
+            try:
+                # bate ponto (de entrada ou saída)
+                pt = controleDePonto(
+                    id_usu = id,
+                    data_hora = str(datetime.now()),
+                    entrada_saida = not obj_ponto["entrada_saida"]
+                    )
+                db.session.add(pt)
+                db.session.commit()
+                return gera_response(201,"usuario id:", id,"Ponto batido com sucesso")
+            except Exception as e:
+                print('Erro:',e)
+                return gera_response(400,"",{},"Erro na atualização")
+        else: # nao
+            try:
+                # bate primeiro ponto do usuario (ponto de entrada) 
+                pt = controleDePonto(
+                    id_usu=id,
+                    data_hora=str(datetime.now()),
+                    entrada_saida = True
+                    )
+                db.session.add(pt)
+                db.session.commit()
+                return gera_response(201,"usuario id:", id,"Ponto batido com sucesso")
+            except Exception as e:
+                print('Erro:',e)
+                return gera_response(400,"",{},"Erro ao bater ponto")
+    else: # nao
+        return gera_response(400,"",{},"Erro ao bater ponto")
 
 # Gera response para todos
 def gera_response(status, nome_dado, conteudo, mensagem=False):
