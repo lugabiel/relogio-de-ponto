@@ -26,13 +26,39 @@ class Usuario(db.Model):
         return {"id": self.id, "nome": self.nome,"cpf": self.cpf,"data de cadastro": self.dataCadastro,"e-mail": self.mail }
 
 
-# Lista todos usuário
+# Listar todos usuário
 @app.route("/usuarios",methods=["GET"])
 def listar_usuarios():
     obj_usuarios = Usuario.query.all()
     json_usuarios = [usuario.to_json() for usuario in obj_usuarios]
     return gera_response(200,"usuarios",json_usuarios,"ok")
 
+# Selecionar Usuarios por <id>
+@app.route("/usuario/<id>", methods=["GET"])
+def selecionar_usuario(id):
+    obj_usuarios = Usuario.query.filter_by(id=id).first()
+    json_usuarios = obj_usuarios.to_json()
+    return gera_response(200,"usuarios",json_usuarios)
+
+# # Cadastrar novo usuario
+# @app.route("/usuario",methods=["POST"])
+# def criar_usuario():
+#     body = request.get_json()
+#     try:
+#         usu = Usuario(
+#             nome=body["nome"],
+#             cpf=body["cpf"],
+#             email=body["email"])
+#         db.session.add(usu)
+#         db.session.commit()
+#         return gera_response(201,"usuario", usu.to_json,"Criado com sucesso")
+#     except Exception as e:
+#         print(e)
+#         return gera_response(400,"",{},"Erro no cadastro")
+#         ...
+
+
+# Gera response para todos
 def gera_response(status, nome_dado, conteudo, mensagem=False):
     body = {}
     body[nome_dado] = conteudo
