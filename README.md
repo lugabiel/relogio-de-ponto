@@ -16,7 +16,8 @@ bibliotecas: SQLAlchemy, Alembic, Marshmallow e Mockito
 # 2. Requisitos Funcionais
 # 2.1 Gestão de Usuários
 Atributos: id, nome completo, cpf, email e data de cadastro
-Operações possíveis
+
+Operações possíveis:
 - Criação: todos os atributos devem ser preenchidos, com exceção do id, que será
 gerado automaticamente no momento do cadastro.
 - Edição: todos os campos são editáveis, com exceção do id e da data de cadastro.
@@ -25,8 +26,9 @@ gerado automaticamente no momento do cadastro.
 # 2.2 Batidas de Ponto
 Atributos: id, usuário responsável pela batida, data/hora da batida e tipo da batida (entrada
 ou saída)
-Operações possíveis
-Criação: cadastro uma batida de ponto (seja entrada ou saída) para um usuário específico,
+
+Operações possíveis:
+- Criação: cadastro uma batida de ponto (seja entrada ou saída) para um usuário específico,
 de acordo com o id informado.
-Listagem: listagem de todas as batidas de ponto de um único usuário. Deve-se mostrar na
+- Listagem: listagem de todas as batidas de ponto de um único usuário. Deve-se mostrar na
 resposta, além da lista de batidas, o total de horas trabalhadas.
