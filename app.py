@@ -6,7 +6,9 @@ import json
 # from flask_marshmallow import Marshmallow
 from flask.wrappers import Response
 from markupsafe import escape
+from datetime import date
 import git
+
 
 
 app = Flask(__name__)
@@ -23,7 +25,7 @@ class Usuario(db.Model):
     dataCadastro = db.Column(db.String(10))
     mail = db.Column(db.String(100))
     def to_json(self):
-        return {"id": self.id, "nome": self.nome,"cpf": self.cpf,"data de cadastro": self.dataCadastro,"e-mail": self.mail }
+        return {"id": self.id, "nome": self.nome,"cpf": self.cpf,"data de cadastro": self.dataCadastro,"mail": self.mail }
 
 
 # Listar todos usuário
@@ -40,22 +42,23 @@ def selecionar_usuario(id):
     json_usuarios = obj_usuarios.to_json()
     return gera_response(200,"usuarios",json_usuarios)
 
-# # Cadastrar novo usuario
-# @app.route("/usuario",methods=["POST"])
-# def criar_usuario():
-#     body = request.get_json()
-#     try:
-#         usu = Usuario(
-#             nome=body["nome"],
-#             cpf=body["cpf"],
-#             email=body["email"])
-#         db.session.add(usu)
-#         db.session.commit()
-#         return gera_response(201,"usuario", usu.to_json,"Criado com sucesso")
-#     except Exception as e:
-#         print(e)
-#         return gera_response(400,"",{},"Erro no cadastro")
-#         ...
+# Cadastrar novo usuario
+@app.route("/usuario",methods=["POST"])
+def criar_usuario():
+    body = request.get_json()
+    try:
+        usu = Usuario(
+            nome=body["nome"],
+            cpf=body["cpf"],
+            mail=body["mail"],
+            dataCadastro=str(date.today()))
+        db.session.add(usu)
+        db.session.commit()
+        return gera_response(201,"usuario", usu.to_json(),"Criado com sucesso")
+    except Exception as e:
+        print(e)
+        return gera_response(400,"",{},"Erro no cadastro")
+        ...
 
 
 # Gera response para todos
