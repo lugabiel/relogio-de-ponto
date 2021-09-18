@@ -56,10 +56,30 @@ def criar_usuario():
         db.session.commit()
         return gera_response(201,"usuario", usu.to_json(),"Criado com sucesso")
     except Exception as e:
-        print(e)
+        print('Erro:',e)
         return gera_response(400,"",{},"Erro no cadastro")
         ...
 
+# Atualizar dados de usuario com <id>
+@app.route("/usuario/<id>",methods=["PUT"])
+def atualizar_usuario(id):
+    # get usu by id
+    obj_usuario = Usuario.query.filter_by(id=id).first()
+    # get novos dados para usu
+    body = request.get_json()
+    try:
+        if('nome' in body):
+            obj_usuario.nome = body['nome']
+        if('cpf' in body):
+            obj_usuario.cpf = body['cpf']
+        if('mail' in body):
+            obj_usuario.mail = body['mail']
+        db.session.add(obj_usuario)
+        db.session.commit()
+        return gera_response(200,"usuario", obj_usuario.to_json(),"Atualizado com sucesso")
+    except Exception as e:
+        print('Erro:',e)
+        return gera_response(400,"",{},"Erro na atualização")
 
 # Gera response para todos
 def gera_response(status, nome_dado, conteudo, mensagem=False):
