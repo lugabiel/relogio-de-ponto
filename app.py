@@ -168,15 +168,13 @@ def listar_horas(id):
                 list_json_ponto.append(obj_ponto)
                 ponto_anterior = []
                 hr_trabalhada = []
-                hr_total = []
+                hr_total = timedelta()
                 for json_ponto in list_json_ponto:
                     str_data_hora = json_ponto["data_hora"] 
-                    print(str_data_hora + '******')
-                    ponto_atual = str_to_datetime(str(str_data_hora))
                     if json_ponto["entrada_saida"]:
-                        ponto_anterior = ponto_atual
+                        ponto_anterior = str_to_datetime(str_data_hora)
                     elif not json_ponto["entrada_saida"]:
-                        hr_trabalhada.append(ponto_atual - ponto_anterior)
+                        hr_trabalhada.append(str_to_datetime(str_data_hora) - ponto_anterior)
                 if ultimo_ponto:
                     hr_trabalhada.append(datetime.now() - ponto_anterior)
                 for hr_parcial in hr_trabalhada:
